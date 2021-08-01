@@ -1,6 +1,7 @@
 package github.com.vklda.spring_demo_app.product.service;
 
 import github.com.vklda.spring_demo_app.product.dto.ProductParam;
+import github.com.vklda.spring_demo_app.product.enums.ProductType;
 import github.com.vklda.spring_demo_app.product.model.Product;
 import org.springframework.stereotype.Service;
 
@@ -16,4 +17,6 @@ public interface ProductService {
     Collection<Product> findByName(String name);
 
     Product findById(Long id);
+
+    Collection<Product> findByType(ProductType type);
 }

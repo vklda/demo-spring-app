@@ -3,6 +3,7 @@ package github.com.vklda.spring_demo_app.product.service;
 import github.com.vklda.spring_demo_app.exceptions.ProductNotFoundException;
 import github.com.vklda.spring_demo_app.product.Entity.ProductEntity;
 import github.com.vklda.spring_demo_app.product.dto.ProductParam;
+import github.com.vklda.spring_demo_app.product.enums.ProductType;
 import github.com.vklda.spring_demo_app.product.model.Product;
 import github.com.vklda.spring_demo_app.product.repository.ProductRepository;
 import github.com.vklda.spring_demo_app.product.service.converter.ProductEntityConverter;
@@ -61,5 +62,12 @@ public class ProductServiceImpl implements ProductService {
             return productEntityConverter.fromEntityToModel(productEntityOpt.get());
         }
         throw new ProductNotFoundException(String.format("Product with id %d not found", id));
+    }
+
+    @Override
+    public Collection<Product> findByType(ProductType type) {
+        return productRepository.findByType(type).stream()
+                .map(productEntityConverter::fromEntityToModel)
+                .collect(Collectors.toSet());
     }
 }

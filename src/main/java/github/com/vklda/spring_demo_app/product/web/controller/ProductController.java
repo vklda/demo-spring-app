@@ -1,7 +1,7 @@
 package github.com.vklda.spring_demo_app.product.web.controller;
 
 import github.com.vklda.spring_demo_app.product.dto.ProductParam;
-import github.com.vklda.spring_demo_app.product.model.Product;
+import github.com.vklda.spring_demo_app.product.enums.ProductType;
 import github.com.vklda.spring_demo_app.product.service.ProductService;
 import github.com.vklda.spring_demo_app.product.web.converter.ProductWebConverter;
 import github.com.vklda.spring_demo_app.product.web.dto.ProductResponse;
@@ -38,16 +38,23 @@ public class ProductController {
                 .collect(Collectors.toSet());
     }
 
-    @GetMapping("/find")
+    @GetMapping()
     public Collection<ProductResponse> findByName(@RequestParam("name") String name) {
         return productService.findByName(name).stream()
                 .map(productWebConverter::toResponse)
                 .collect(Collectors.toSet());
     }
 
-    @GetMapping("/find/{id}")
+    @GetMapping("/{id}")
     public ProductResponse findById(@Valid @NotNull @PathVariable Long id) {
         return productWebConverter.toResponse(productService.findById(id));
+    }
+
+    @GetMapping("/type/{type}")
+    public Collection<ProductResponse> findByType(@Valid @NotNull @PathVariable String type) {
+        return productService.findByType(ProductType.valueOf(type)).stream()
+                .map(productWebConverter::toResponse)
+                .collect(Collectors.toSet());
     }
 
 }
