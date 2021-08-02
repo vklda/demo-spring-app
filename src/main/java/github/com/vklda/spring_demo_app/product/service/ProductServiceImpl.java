@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,10 +31,10 @@ public class ProductServiceImpl implements ProductService {
 
         var product = productEntityConverter.toModel(productParam);
         var productEntity = productEntityConverter.toEntity(product);
-        var savedProduct = productRepository.save(productEntity);
+        var savedProductEntity = productRepository.save(productEntity);
 
-        log.info("Saving product with id: " + savedProduct.getId() + " and name is " + savedProduct.getName());
-        return productEntityConverter.fromEntityToModel(savedProduct);
+        log.info("Saving product with id: " + savedProductEntity.getId() + " and name is " + savedProductEntity.getName());
+        return productEntityConverter.fromEntityToModel(savedProductEntity);
     }
 
     @Override
@@ -69,5 +68,19 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findByType(type).stream()
                 .map(productEntityConverter::fromEntityToModel)
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Product update(Long id, ProductParam productParam) {
+        var productEntity = productRepository.getById(id);
+
+        productEntity.setName(productParam.getName());
+        productEntity.setType(productParam.getType());
+        productEntity.setPrice(productParam.getPrice());
+        productEntity.setDescription(productParam.getDescription());
+        productEntity.setDiscount(productParam.getDiscount());
+
+        var savedProductEntity = productRepository.save(productEntity);
+        return productEntityConverter.fromEntityToModel(savedProductEntity);
     }
 }

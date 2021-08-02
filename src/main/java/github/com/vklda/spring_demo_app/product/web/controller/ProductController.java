@@ -2,6 +2,7 @@ package github.com.vklda.spring_demo_app.product.web.controller;
 
 import github.com.vklda.spring_demo_app.product.dto.ProductParam;
 import github.com.vklda.spring_demo_app.product.enums.ProductType;
+import github.com.vklda.spring_demo_app.product.model.Product;
 import github.com.vklda.spring_demo_app.product.service.ProductService;
 import github.com.vklda.spring_demo_app.product.web.converter.ProductWebConverter;
 import github.com.vklda.spring_demo_app.product.web.dto.ProductResponse;
@@ -57,4 +58,9 @@ public class ProductController {
                 .collect(Collectors.toSet());
     }
 
+    @PutMapping("/{id}")
+    public ProductResponse update(@PathVariable Long id, @Valid @NotNull @RequestBody ProductParam productParam) {
+        var updatedProduct = productService.update(id, productParam);
+        return productWebConverter.toResponse(updatedProduct);
+    }
 }

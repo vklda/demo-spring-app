@@ -19,4 +19,6 @@ public interface ProductService {
     Product findById(Long id);
 
     Collection<Product> findByType(ProductType type);
+
+    Product update(Long id, ProductParam productParam);
 }
