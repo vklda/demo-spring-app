@@ -12,8 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Collection<Product> findByName(String name) {
         return productRepository.findByName(name).stream()
                 .map(productEntityConverter::fromEntityToModel)
@@ -71,16 +74,36 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public Product update(Long id, ProductParam productParam) {
-        var productEntity = productRepository.getById(id);
+        var oldProduct = productRepository.findById(id)
+                .map(productEntityConverter::fromEntityToModel)
+                .orElseThrow(() -> new ProductNotFoundException("Product with id " + id + " not found"));
 
-        productEntity.setName(productParam.getName());
-        productEntity.setType(productParam.getType());
-        productEntity.setPrice(productParam.getPrice());
-        productEntity.setDescription(productParam.getDescription());
-        productEntity.setDiscount(productParam.getDiscount());
+        var updatedProduct = productEntityConverter.toModel(productParam);
+        productEntityConverter.updateFields(updatedProduct, oldProduct);
 
-        var savedProductEntity = productRepository.save(productEntity);
+        var updatedProductEntity = productEntityConverter.toEntity(updatedProduct);
+        var savedProductEntity = productRepository.save(updatedProductEntity);
+
         return productEntityConverter.fromEntityToModel(savedProductEntity);
+    }
+
+    @Override
+    @Transactional
+    public Collection<Product> updateDiscountByType(ProductType type, BigDecimal discount) {
+        var products = findByType(type);
+
+        products.forEach(it -> it.setDiscount(discount));
+
+        var updatedEntities = products.stream()
+                .map(productEntityConverter::toEntity)
+                .collect(Collectors.toSet());
+
+        var savedEntities = productRepository.saveAll(updatedEntities);
+
+        return savedEntities.stream()
+                .map(productEntityConverter::fromEntityToModel)
+                .collect(Collectors.toSet());
     }
 }

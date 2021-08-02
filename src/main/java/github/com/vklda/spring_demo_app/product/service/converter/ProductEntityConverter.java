@@ -23,4 +23,9 @@ public class ProductEntityConverter {
     public Product fromEntityToModel(ProductEntity productEntity) {
         return modelMapper.map(productEntity, Product.class);
     }
+
+    public void updateFields(Product updatedProduct, Product oldProduct) {
+        updatedProduct.setId(oldProduct.getId());
+        modelMapper.map(updatedProduct, oldProduct);
+    }
 }

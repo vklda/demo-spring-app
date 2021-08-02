@@ -2,7 +2,6 @@ package github.com.vklda.spring_demo_app.product.web.controller;
 
 import github.com.vklda.spring_demo_app.product.dto.ProductParam;
 import github.com.vklda.spring_demo_app.product.enums.ProductType;
-import github.com.vklda.spring_demo_app.product.model.Product;
 import github.com.vklda.spring_demo_app.product.service.ProductService;
 import github.com.vklda.spring_demo_app.product.web.converter.ProductWebConverter;
 import github.com.vklda.spring_demo_app.product.web.dto.ProductResponse;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -40,7 +40,7 @@ public class ProductController {
     }
 
     @GetMapping()
-    public Collection<ProductResponse> findByName(@RequestParam("name") String name) {
+    public Collection<ProductResponse> findByName(@NotNull @RequestParam("name") String name) {
         return productService.findByName(name).stream()
                 .map(productWebConverter::toResponse)
                 .collect(Collectors.toSet());
@@ -62,5 +62,13 @@ public class ProductController {
     public ProductResponse update(@PathVariable Long id, @Valid @NotNull @RequestBody ProductParam productParam) {
         var updatedProduct = productService.update(id, productParam);
         return productWebConverter.toResponse(updatedProduct);
+    }
+
+    @PutMapping("/type/{type}")
+    public Collection<ProductResponse> updateDiscountByType(@Valid @NotNull @PathVariable String type,
+                                                            @NotNull @RequestParam("discount") BigDecimal discount) {
+        return productService.updateDiscountByType(ProductType.valueOf(type), discount).stream()
+                .map(productWebConverter::toResponse)
+                .collect(Collectors.toSet());
     }
 }
