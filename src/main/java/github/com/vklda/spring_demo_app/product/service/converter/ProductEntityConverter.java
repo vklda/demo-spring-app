@@ -1,6 +1,6 @@
 package github.com.vklda.spring_demo_app.product.service.converter;
 
-import github.com.vklda.spring_demo_app.product.Entity.ProductEntity;
+import github.com.vklda.spring_demo_app.product.entity.ProductEntity;
 import github.com.vklda.spring_demo_app.product.dto.ProductParam;
 import github.com.vklda.spring_demo_app.product.model.Product;
 import lombok.RequiredArgsConstructor;

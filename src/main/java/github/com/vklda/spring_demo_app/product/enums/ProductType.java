@@ -12,5 +12,5 @@ public enum ProductType {
     MEAT("MEAT"),
     FISH("FISH");
 
-    String name;
+    private final String name;
 }

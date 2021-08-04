@@ -32,14 +32,14 @@ public class ProductController {
         return productWebConverter.toResponse(product);
     }
 
-    @GetMapping("/findAll")
+    @GetMapping()
     public Collection<ProductResponse> findAll() {
         return productService.findAll().stream()
                 .map(productWebConverter::toResponse)
                 .collect(Collectors.toSet());
     }
 
-    @GetMapping()
+    @GetMapping("/find")
     public Collection<ProductResponse> findByName(@NotNull @RequestParam("name") String name) {
         return productService.findByName(name).stream()
                 .map(productWebConverter::toResponse)
