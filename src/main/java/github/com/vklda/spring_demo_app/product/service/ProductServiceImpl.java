@@ -2,6 +2,7 @@ package github.com.vklda.spring_demo_app.product.service;
 
 import github.com.vklda.spring_demo_app.exceptions.ProductNotFoundException;
 import github.com.vklda.spring_demo_app.product.dto.ProductParam;
+import github.com.vklda.spring_demo_app.product.entity.ProductEntity;
 import github.com.vklda.spring_demo_app.product.enums.ProductType;
 import github.com.vklda.spring_demo_app.product.model.Product;
 import github.com.vklda.spring_demo_app.product.repository.ProductRepository;
@@ -13,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.Objects;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,9 +41,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional(readOnly = true)
     public Collection<Product> findAll() {
-        return productRepository.findAll().stream()
-                .map(productEntityConverter::fromEntityToModel)
-                .collect(Collectors.toList());
+        var entities = productRepository.findAll();
+        return productEntityConverter.toModels(entities);
     }
 
     @Override

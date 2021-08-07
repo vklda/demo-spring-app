@@ -4,6 +4,7 @@ import github.com.vklda.spring_demo_app.product.enums.ProductType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -29,8 +30,10 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private ProductType type;
 
+    @Nullable
     private String description;
 
+    @NotNull
     @PositiveOrZero
     private BigDecimal discount;
 }

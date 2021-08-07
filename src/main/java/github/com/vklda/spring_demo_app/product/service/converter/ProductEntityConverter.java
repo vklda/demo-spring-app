@@ -7,6 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 @RequiredArgsConstructor
 public class ProductEntityConverter {
@@ -27,5 +31,11 @@ public class ProductEntityConverter {
     public void updateFields(Product updatedProduct, Product oldProduct) {
         updatedProduct.setId(oldProduct.getId());
         modelMapper.map(updatedProduct, oldProduct);
+    }
+
+    public Collection<Product> toModels(Collection<ProductEntity> productEntities) {
+        return productEntities.stream()
+                .map(this::fromEntityToModel)
+                .collect(Collectors.toList());
     }
 }
